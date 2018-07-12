@@ -6,7 +6,6 @@
 #include "util.hh"
 
 #include <boost/noncopyable.hpp>
-#include <cpprest/json.h>
 #include <stdexcept>
 #include <string>
 
