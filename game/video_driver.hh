@@ -4,7 +4,7 @@
 #include "glshader.hh"
 #include "glutil.hh"
 #include <boost/function.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <map>
 
 unsigned int screenW();
 unsigned int screenH();
@@ -64,9 +64,12 @@ public:
 	Shader& shader(std::string const& name) {
 		ShaderMap::iterator it = m_shaders.find(name);
 		if (it != m_shaders.end()) return *it->second;
-		// const_cast required to workaround ptr_map's protection against construction of temporaries
-		return *m_shaders.insert(const_cast<std::string&>(name), new Shader(name)).first->second;
+		std::pair<std::string, std::unique_ptr<Shader>> kv = std::make_pair(name, std::make_unique<Shader>(name)); 
+		return *m_shaders.insert(std::move(kv)).first->second;
 	}
+	/// Compiles and links all shaders.
+	void createShaders();
+	void resetShaders() { m_shaders.clear(); createShaders(); };
 	void updateColor();
 	void updateTransforms();
 	/// Check if resizing (full screen toggle) caused OpenGL context to be lost, in which case textures etc. need reloading.
@@ -82,7 +85,7 @@ private:
 	bool m_needReload = true;
 	int m_windowX = 0;
 	int m_windowY = 0;
-	typedef boost::ptr_map<std::string, Shader> ShaderMap;
+	using ShaderMap = std::map<std::string, std::unique_ptr<Shader>>;
 	ShaderMap m_shaders; ///< Shader programs by name
 	SDL_Window* screen = nullptr;
 };
