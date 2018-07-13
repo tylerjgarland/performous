@@ -6,6 +6,7 @@
 #include "util.hh"
 
 #include <boost/noncopyable.hpp>
+#include <cpprest/json.h>
 #include <stdexcept>
 #include <string>
 
@@ -79,7 +80,7 @@ public:
 	int randomIdx = 0; ///< sorting index used for random order
 
 	// Functions only below this line
-
+	Song(web::json::value const& song);  ///< Load song from cache.
 	Song(fs::path const& path, fs::path const& filename);  ///< Load song from specified path and filename
 	void reload(bool errorIgnore = true);  ///< Reset and reload the entire song from file
 	void loadNotes(bool errorIgnore = true);  ///< Load note data (called when entering singing screen, headers preloaded).
