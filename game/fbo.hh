@@ -8,7 +8,7 @@
 class FBO: boost::noncopyable {
   public:
 	/// Generate the FBO and attach a fresh texture to it
-	FBO(unsigned w, unsigned h): m_w(w), m_h(h) {
+	FBO(float w, float h): m_w(w), m_h(h) {
 		// Create FBO
 		if (glIsFramebuffer(m_fbo) != GL_TRUE) { std::clog << "fbo/debug: Generating new framebuffer." << std::endl; glGenFramebuffers(1, &m_fbo); }
 		update();
@@ -30,13 +30,13 @@ class FBO: boost::noncopyable {
 	static void unbind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-	void resize(unsigned w, unsigned h) {
+	void resize(float w, float h) {
 		m_w = w;
 		m_h = h;
 		update();
 	}
-	unsigned width() const { return m_w; }
-	unsigned height() const { return m_h; }
+	float width() const { return m_w; }
+	float height() const { return m_h; }
 	void update() {
 		{
 			UseTexture tex(m_texture);
@@ -55,8 +55,8 @@ class FBO: boost::noncopyable {
 		unbind();
 	}
   private:
-  	unsigned m_w;
-  	unsigned m_h;
+  	float m_w;
+  	float m_h;
 	GLuint m_fbo;
 	OpenGLTexture<GL_TEXTURE_2D> m_texture;
 	OpenGLTexture<GL_TEXTURE_2D> m_depth;
